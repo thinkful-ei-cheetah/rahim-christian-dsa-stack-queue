@@ -28,7 +28,9 @@ class Stack {
 }
 
 function peek(stack) {
-  return stack.top.data;
+  if (stack.top !== null) {
+    return stack.top.data;
+  }
 }
 
 function isEmpty(stack) {
@@ -51,22 +53,24 @@ function display(stack) {
 
 function is_palindrome(s) {
   s = s.toLowerCase().replace(/[^a-zA-Z0-9]/g, "")
-  const stack = new Stack();
+  let stack = new Stack();
+  let result = ''
 
-  for (let i = 0; i < s.length; i++) {
+  for (let i = 0; i < (s.length)/2; i++) {
     stack.push(`${s[i]}`)
+    result += s[i]
   }
 
-  let currentNode = stack.top;
-  let reversedString = ''
-
-  while (currentNode !== null) {
-    reversedString += currentNode.data;
-    currentNode = currentNode.next;
+  if (s.length % 2 !== 0) {
+    stack.pop()
   }
 
-  if (reversedString !== s) {
-    return false
+  while (peek(stack)) {
+    result += stack.pop()
+  }
+
+  if (result !== s) {
+    return false;
   }
 
   return true;
@@ -85,36 +89,20 @@ function is_palindrome(s) {
 function matching(exp) {
   const stack = new Stack();
   for (let i = 0; i < exp.length; i++) {
-    stack.push(`${exp[i]}`)
-  }
-
-  let currentNode = stack.top;
-  let openCount = 0;
-  let closedCount = 0;
-
-  while (currentNode != null) {
-    if (currentNode.data === ')') {
-      closedCount++
+    if (exp[i] === '(') {
+      stack.push(exp[i])
     }
 
-    if (currentNode.data === '(') {
-      openCount++
+    if ((exp[i] === ')') && (stack.node !== null)) {
+      stack.pop()
     }
-
-    currentNode = currentNode.next
   }
 
-  if (openCount === closedCount) {
-    return true;
-  } 
-
-  else if (openCount > closedCount) {
-    return 'you are missing a )'
+  if (stack.top === null) {
+    return true
   }
 
-  else if (closedCount > openCount) {
-    return 'you are missing a ('
-  }
+  return false;
 
 }
 
